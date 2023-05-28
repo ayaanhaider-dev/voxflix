@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Logo from '../../Assest/logo.png'
 
 function Footer() {
   const Links = [
@@ -82,7 +81,7 @@ function Footer() {
             <div className="pb-3.5 sm:pb-0 col-span-1 md:col-span-2 lg:col-span-3">
               <Link to="/">
                 <img
-                  src={Logo}
+                  src="https://i.ibb.co/Tb835hk/image-removebg-preview-1.png"
                   alt="Logo"
                   className="w-2/4 object-contain h-12"
                 />

@@ -1,7 +1,6 @@
 import React from "react";
 import Layouts from "../Components/Layouts";
 import { Link } from "react-router-dom";
-import Logo from '../../Assest/logo.png'
 
 function Login() {
   return (
@@ -9,7 +8,7 @@ function Login() {
       <div className="container mx-auto px-2 my-24 flex-colo">
         <form className="w-full 2xl:w-2/5 gap-8 flex-colo p-8 sm:p-14 md:w-3/5 bg-dry  rounded-lg border border-border">
           <img
-            src={Logo}
+            src="https://i.ibb.co/Tb835hk/image-removebg-preview-1.png"
             alt="VoxFlix"
             className="w-full h-12 object-contain"
           />

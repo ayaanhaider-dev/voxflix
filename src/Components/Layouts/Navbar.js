@@ -5,7 +5,6 @@ import { FaUser } from "react-icons/fa";
 import { MdFavorite } from "react-icons/md";
 import { BiX } from "react-icons/bi";
 import { ImMenu } from "react-icons/im";
-import Logo from '../../Assest/logo.png'
 
 function Navbar() {
   const hover = "hover:text-subMain transitions text-white";
@@ -30,7 +29,7 @@ function Navbar() {
           <div className="col-span-1 lg:block hidden">
             <Link to="/">
               <img
-                src={Logo}
+                src="https://i.ibb.co/Tb835hk/image-removebg-preview-1.png"
                 alt=""
                 className="w-full h-35 object-contain"
               />
