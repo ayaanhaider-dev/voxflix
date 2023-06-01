@@ -1,12 +1,48 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { RiLoginCircleLine } from "react-icons/ri";
 import Layouts from "../Components/Layouts";
-import { Link } from "react-router-dom";
+import { app } from "../Configs/firebase-config";
+
+const auth = getAuth(app);
 
 function Login() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    // Check if the user is already logged in
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // Redirect to the home page if the user is already logged in
+        navigate("/");
+      }
+    });
+
+    // Clean up the subscription
+    return () => unsubscribe();
+  }, [navigate]);
+
+  const handleLogin = async (event) => {
+    event.preventDefault();
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      // Redirect to the home page after successful login
+      navigate("/");
+    } catch (error) {
+      console.error("Error logging in:", error.message);
+    }
+  };
+
   return (
     <Layouts>
       <div className="container mx-auto px-2 my-24 flex-colo">
-        <form className="w-full 2xl:w-2/5 gap-8 flex-colo p-8 sm:p-14 md:w-3/5 bg-dry  rounded-lg border border-border">
+        <form
+          className="w-full 2xl:w-2/5 gap-8 flex-colo p-8 sm:p-14 md:w-3/5 bg-dry  rounded-lg border border-border"
+          onSubmit={handleLogin}
+        >
           <img
             src="https://i.ibb.co/Tb835hk/image-removebg-preview-1.png"
             alt="VoxFlix"
@@ -20,6 +56,8 @@ function Login() {
                 type="email"
                 placeholder="Enter Your Email Here"
                 className="w-full text-sm mt-2 p-5 border border-border rounded text-white bg-main"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
           </div>
@@ -31,6 +69,8 @@ function Login() {
                 placeholder="Password"
                 name="password"
                 className="w-full text-sm mt-2 p-5 border border-border rounded text-white bg-main"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
             </div>
           </div>
@@ -38,22 +78,7 @@ function Login() {
             type="submit"
             className="bg-subMain transitions hover:bg-main flex-rows gap-4 text-white p-4 rounded-lg w-full"
           >
-            <svg
-              stroke="currentColor"
-              fill="none"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              height="1em"
-              width="1em"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-              <polyline points="10 17 15 12 10 7"></polyline>
-              <line x1="15" y1="12" x2="3" y2="12"></line>
-            </svg>{" "}
-            Sign In
+            <RiLoginCircleLine size={24} /> Sign In
           </button>
           <p className="text-center text-border">
             Don't have an account?{" "}
@@ -66,4 +91,5 @@ function Login() {
     </Layouts>
   );
 }
+
 export default Login;

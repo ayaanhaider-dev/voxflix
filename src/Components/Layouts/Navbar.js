@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { BiSearchAlt } from "react-icons/bi";
 import { FaUser } from "react-icons/fa";
 import { MdFavorite } from "react-icons/md";
 import { BiX } from "react-icons/bi";
 import { ImMenu } from "react-icons/im";
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { app } from "../../Configs/firebase-config";
+
+const auth = getAuth(app);
 
 function Navbar() {
   const hover = "hover:text-subMain transitions text-white";
@@ -17,9 +21,28 @@ function Navbar() {
     isActive ? `${active} ${inActive}` : inActive;
 
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        setUser(null);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -62,52 +85,65 @@ function Navbar() {
                     <BiSearchAlt className="text-gray-500 " />
                   </div>
                 </div>
-          <div className="col-span-1 font-medium text-sm lg:hidden">
-            <button className={inActive} onClick={toggleDrawer}>
-              <ImMenu />
-            </button>
-            {isOpen && (
-              <div className="fixed inset-0 bg-gray-800 bg-opacity-75 transition-opacity duration-300 ease-in-out">
-                <div className="flex justify-end p-4">
-                  <button className="text-white" onClick={toggleDrawer}>
-                    <BiX />
+                <div className="col-span-1 font-medium text-sm lg:hidden">
+                  <button className={inActive} onClick={toggleDrawer}>
+                    <ImMenu />
                   </button>
+                  {isOpen && (
+                    <div className="fixed inset-0 bg-gray-800 bg-opacity-75 transition-opacity duration-300 ease-in-out">
+                      <div className="flex justify-end p-4">
+                        <button className="text-white" onClick={toggleDrawer}>
+                          <BiX />
+                        </button>
+                      </div>
+                      <div className="flex flex-col items-center justify-center h-screen">
+                        <NavLink
+                          to="/movies"
+                          className={NavHover}
+                          onClick={toggleDrawer}
+                        >
+                          Movies
+                        </NavLink>
+                        <NavLink
+                          to="/shows"
+                          className={NavHover}
+                          onClick={toggleDrawer}
+                        >
+                          Tv Shows
+                        </NavLink>
+                        <NavLink
+                          to="/entertainment"
+                          className={NavHover}
+                          onClick={toggleDrawer}
+                        >
+                          Entertainment
+                        </NavLink>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="flex flex-col items-center justify-center h-screen">
-                  <NavLink
-                    to="/movies"
-                    className={NavHover}
-                    onClick={toggleDrawer}
-                  >
-                    Movies
-                  </NavLink>
-                  <NavLink
-                    to="/shows"
-                    className={NavHover}
-                    onClick={toggleDrawer}
-                  >
-                    Tv Shows
-                  </NavLink>
-                  <NavLink
-                    to="/entertainment"
-                    className={NavHover}
-                    onClick={toggleDrawer}
-                  >
-                    Entertainment
-                  </NavLink>
-                </div>
-              </div>
-            )}
-          </div>
               </div>
             </div>
           </div>
           <div className="col-span-1 font-medium text-sm hidden xl:gap-4 2xl:gap-10 justify-between lg:flex xl:justify-end items-center">
-            <div className="flex justify-between items-center">
+            {user ? (
+              <div className="flex justify-between items-center">
+                <Link to="/profile" className={`${Hover} ml-3`}>
+                  <img
+                    src={user.photoURL || "/"}
+                    alt="Profile"
+                    className="w-6 h-6 rounded-full"
+                  />
+                </Link>
+                <button onClick={handleLogout} className={`${Hover} ml-3`}>
+                  Logout
+                </button>
+              </div>
+            ) : (
               <NavLink to="/login" className={`${Hover} ml-3`}>
-                <FaUser className="w-6 h-6 " />
+                <FaUser className="w-6 h-6" />
               </NavLink>
-            </div>
+            )}
             <NavLink to="/favorite" className={`${Hover} relative`}>
               <MdFavorite className="w-6 h-6" />
               <div className="w-5 h-5 flex-colo rounded-full text-xs bg-subMain text-white absolute -top-5 -right-1">
@@ -115,8 +151,6 @@ function Navbar() {
               </div>
             </NavLink>
           </div>
-
-         
         </div>
       </div>
     </>
