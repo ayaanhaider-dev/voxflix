@@ -33,8 +33,7 @@ function Signup() {
         password
       );
 
-      const user = userCredential.user;
-      await updateProfile(user, {
+      await updateProfile(userCredential.user, {
         displayName: userName,
         photoURL: "http://localhost:3000/favicon.png",
       });
@@ -51,8 +50,7 @@ function Signup() {
 
   const handleGoogleSignIn = async () => {
     try {
-      const userCredential = await signInWithPopup(auth, googleProvider);
-      const user = userCredential.user;
+      await signInWithPopup(auth, googleProvider);
       
       // Perform additional actions if needed after successful sign-in
     } catch (error) {

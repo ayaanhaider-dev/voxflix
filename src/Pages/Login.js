@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "firebase/auth";
 import { RiLoginCircleLine } from "react-icons/ri";
 import Layouts from "../Components/Layouts";
 import { app } from "../Configs/firebase-config";
 
 const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
 
 function Login() {
   const navigate = useNavigate();
@@ -33,6 +34,16 @@ function Login() {
       navigate("/");
     } catch (error) {
       console.error("Error logging in:", error.message);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+      // Redirect to the home page after successful sign-in
+      navigate("/");
+    } catch (error) {
+      console.error("Error signing in with Google:", error.message);
     }
   };
 
@@ -79,6 +90,13 @@ function Login() {
             className="bg-subMain transitions hover:bg-main flex-rows gap-4 text-white p-4 rounded-lg w-full"
           >
             <RiLoginCircleLine size={24} /> Sign In
+          </button>
+          <button
+            type="button"
+            className="bg-red-600 text-white p-4 rounded-lg w-full mt-4"
+            onClick={handleGoogleSignIn}
+          >
+            Login with Google
           </button>
           <p className="text-center text-border">
             Don't have an account?{" "}
